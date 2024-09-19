@@ -26,14 +26,9 @@ function deIndent(text) {
 
 // Support footnotes
 function replaceFootnotes(text) {
-	// Find all footnote references
-	let footnoteRefs = text.match(/\[\^[A-Za-z0-9]+\](?!:)/g);
-	if (footnoteRefs === null) {
-		return text;
-	}
-
 	// Find all footnotes; must have a newline before and after them
 	let footnotes = text.match(/<p>[ \t]*\[\^[A-Za-z0-9]+\]:.*[ \t\n]*<\/p>/g);
+
 	if (footnotes === null) {
 		return text;
 	}
@@ -45,6 +40,12 @@ function replaceFootnotes(text) {
 	let footnotesClean = footnotes.map(function (f){
 		return f.substring(3, f.length - 4);
 	});
+	
+	// Find all footnote references
+	let footnoteRefs = text.match(/\[\^[A-Za-z0-9]+\](?!:)/g);
+	if (footnoteRefs === null) {
+		return text;
+	}
 
 	// Only treat candidate refs as footnote refs if they have a corresponding footnote 
 	let refSymbols = footnoteRefs.map(function (r){return r.substring(2, r.length - 1);});
