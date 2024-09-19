@@ -206,10 +206,10 @@
 			</td>
 			<td>
 				<script type="text/html">
-					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref"></a></sup>. With more text.</p>
+					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup>. With more text.</p>
 					<div class="footnotes">
-						<hr class="footnote-div"/>
-						<p>1. Here is the content of that footnote. <a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
+						<hr class="footnote-div">
+						<p>1. Here is the content of that footnote.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
 					</div>
 				</script>
 			</td>
@@ -217,9 +217,9 @@
 		<tr title="One footnote can be called from multiple sites">
 			<td>
 				<md-block>
-					Here is some text with a footnote[^x]. More text with the same footnote[^x].
+					Here is some text with a footnote[^32]. More text with the same footnote[^32].
 
-					[^x]: Here is the content of that footnote.
+					[^32]: Here is the content of that footnote.
 				</md-block>
 				<testarea>
 				</testarea>
@@ -228,8 +228,8 @@
 				<script type="text/html">
 					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup>. More text with the same footnote<sup><a class="footnote-ref" href="#footnote-1-2" id="footnote-1-ref-2">1</a></sup>.</p>
 					<div class="footnotes">
-						<hr class="footnote-div"/>
-						<p>1. Here is the content of that footnote. <a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a><a class="footnote" href="#footnote-1-ref-2" id="footnote-1-2">↩</a></p>
+						<hr class="footnote-div">
+						<p>1. Here is the content of that footnote.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a><a class="footnote" href="#footnote-1-ref-2" id="footnote-1-2">↩</a></p>
 					</div>
 				</script>
 			</td>
@@ -280,10 +280,10 @@
 				<script type="text/html">
 					<p>Here is some text with<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup> multiple<sup><a class="footnote-ref" href="#footnote-2" id="footnote-2-ref">2</a></sup> footnotes<sup><a class="footnote-ref" href="#footnote-3" id="footnote-3-ref">3</a></sup>.</p>
 					<div class="footnotes">
-						<hr class="footnote-div"/>
-						<p>1. This should be the first footnote. <a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
-						<p>2. This should be the middle footnote. <a class="footnote" href="#footnote-2-ref" id="footnote-2">↩</a></p>
-						<p>3. This should be the last footnote. <a class="footnote" href="#footnote-3-ref" id="footnote-3">↩</a></p>
+						<hr class="footnote-div">
+						<p>1. This should be the first footnote.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
+						<p>2. This should be the middle footnote.<a class="footnote" href="#footnote-2-ref" id="footnote-2">↩</a></p>
+						<p>3. This should be the last footnote.<a class="footnote" href="#footnote-3-ref" id="footnote-3">↩</a></p>
 					</div>
 				</script>
 			</td>
@@ -304,8 +304,29 @@
 				<script type="text/html">
 					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup>.</p>
 					<div class="footnotes">
-						<hr class="footnote-div"/>
-						<p>1. This is the first definition. <a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
+						<hr class="footnote-div">
+						<p>1. This is the first definition.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
+					</div>
+				</script>
+			</td>
+		</tr>
+		<tr title="A footnote description is invalid without a blank line before it">
+			<td>
+				<md-block>
+					Here is some text with two[^whee] footnotes[^yay].
+
+					[^whee]: This definition is fine
+					[^yay]: This definition is not.
+				</md-block>
+				<testarea>
+				</testarea>
+			</td>
+			<td>
+				<script type="text/html">
+					<p>Here is some text with two<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup> footnotes.</p>
+					<div class="footnotes">
+						<hr class="footnote-div">
+						<p>1. This definition is fine.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
 					</div>
 				</script>
 			</td>
@@ -320,7 +341,7 @@ function innerHTML(test, ref) {
 
 	ref = $("script[type='text/html']", ref)?.textContent;
 	[test, ref] = [test, ref].map(t => t.trim().replace(/\s+/g, " ").replace(/>\s+/g, ">").replace(/\s+<\//g, "</"));
-	console.log(test, 1, ref)
+	if (test != ref) {console.log(test, 1, ref)}
 	return test == ref;
 }
 </script>

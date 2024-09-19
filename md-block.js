@@ -33,7 +33,7 @@ function replaceFootnotes(text) {
 	}
 
 	// Find all footnotes; must have a newline before and after them
-	let footnotes = text.match(/<p>[ \t]*\[\^[A-Za-z0-9]+\]:.*[ \t]*<\/p>/g);
+	let footnotes = text.match(/<p>[ \t]*\[\^[A-Za-z0-9]+\]:.*[ \t\n]*<\/p>/g);
 	if (footnotes === null) {
 		return text;
 	}
@@ -50,7 +50,7 @@ function replaceFootnotes(text) {
 	let refSymbols = footnoteRefs.map(function (r){return r.substring(2, r.length - 1);});
 	let footnoteSymbols = footnotesClean.map(function (r){
 		r = r.split(":")[0];  // [^foo]
-		return r.substring(2, r.length-1)
+		return r.substring(2, r.length-1)  // foo
 	});
 	let validRefSymbols = refSymbols.filter((r) => footnoteSymbols.includes(r));
 
@@ -71,13 +71,13 @@ function replaceFootnotes(text) {
 	})
 
 	// ...and add a footnotes section to bottom of the text
-	text += '\n\n<div class="footnotes">\n\t<hr class="footnote-div"/>'
+	text += '\n<div class="footnotes">\n\t<hr class="footnote-div"//////>'
 	validFootnotes.forEach( (footnote, i) =>{
 		let content = footnote.split(":")[1];
 		content = content.substring(0, content.length - 4).trim();
 		let iRef = String(i + 1);
 		let linkback = '<a class="footnote" href="#footnote-' + iRef + '-ref" id="footnote-' + iRef + '">↩</a>'
-		text += "\t\n<p>" + iRef + ". " + content + linkback + "</p>";
+		text += "\n\t<p>" + iRef + ". " + content + linkback + "</p>";
 	})
 	text += "\n</div>"
 	
