@@ -18,10 +18,67 @@ function deIndent(text) {
 
 	if (indent) {
 		indent = indent[1];
-
 		text = text.replace(RegExp("^" + indent, "gm"), "");
 	}
 
+	return text;
+}
+
+// Support footnotes
+function replaceFootnotes(text) {
+	// Find all footnote references
+	let footnoteRefs = text.match(/\[\^[A-Za-z0-9]+\](?!:)/g);
+	if (footnoteRefs === null) {
+		return text;
+	}
+
+	// Find all footnotes; 
+	// must have a newline before them (TODO: add newline/space check)
+	let footnotes = text.match(/\[\^[A-Za-z0-9]+\]:/g);
+	if (footnotes === null) {
+		return text;
+	}
+
+	// Strip all footnotes from the text:
+	footnotes.forEach( f =>{
+		text = text.replace(f, "");
+	})
+	console.log("HERE", footnotes)
+
+	// Only treat candidate refs as footnote refs if they have a corresponding footnote 
+	let refSymbols = footnoteRefs.map(function (r){return r.substring(2, r.length - 1);});
+	let footnoteSymbols = footnotes.map(function (r){return r.substring(2, r.length - 2);});
+	let validRefSymbols = refSymbols.filter((r) => footnoteSymbols.includes(r));
+	console.log(validRefSymbols);
+
+	// Only include the first footnotes for each reference
+	let validFootnotes = validRefSymbols.map(function (s) {
+		let i = footnoteSymbols.findIndex(function (fn){return fn === s;});
+		return footnotes[i];
+	});
+
+	// Now our lists of references and footnotes are all ordered correctly!
+	// Any valid footnote/reference pairs? Link them in text
+	validRefSymbols.forEach( (ref, i) =>{
+		let iRef = String(i + 1);
+		let footnoteSuperscript = '<sup><a class="footnote-ref" href="#footnote-' + 
+									iRef + '" id="footnote-' + iRef + '-ref">' +
+									iRef + '</a></sup>';
+		text = text.replace("[^" + ref + "]", footnoteSuperscript);
+	})
+
+	// ...and add a footnotes section to bottom of the text
+	text += '\n<div class="footnotes">\n\t<hr class="footnote-div"/>'
+	validFootnotes.forEach( (footnote, i) =>{
+		console.log(footnote)
+		let content = footnote.split(':');
+		console.log(content)
+		let iRef = String(i + 1);
+		let linkback = '<a class="footnote" href="#footnote-' + iRef + '-ref" id="footnote-' + iRef + '">↩</a>'
+		text += "\t\n<p>" + iRef + ". " + content + linkback + "</p>";
+	})
+	text += "\n</div>"
+	
 	return text;
 }
 
@@ -100,6 +157,9 @@ export class MarkdownElement extends HTMLElement {
 				return;
 			}
 		}
+
+		// Handle footnote replacement *before* any other markdown parsing happens
+		html = replaceFootnotes(html);
 
 		this.innerHTML = html;
 
@@ -233,6 +293,7 @@ export class MarkdownBlock extends MarkdownElement {
 		},
 
 		code (code, language, escaped) {
+			
 			if (this._contentFromHTML) {
 				// Inline HTML code needs to be escaped to not be parsed as HTML by the browser
 				// This results in marked double-escaping it, so we need to unescape it
@@ -242,7 +303,7 @@ export class MarkdownBlock extends MarkdownElement {
 				// Remote code may include characters that need to be escaped to be visible in HTML
 				code = code.replace(/</g, "&lt;");
 			}
-
+			
 			return `<pre class="language-${language}"><code>${code}</code></pre>`;
 		}
 	}, MarkdownSpan.renderer);
@@ -255,7 +316,6 @@ export class MarkdownBlock extends MarkdownElement {
 		if (oldValue === newValue) {
 			return;
 		}
-
 		switch (name) {
 			case "src":
 				let url;
@@ -265,6 +325,7 @@ export class MarkdownBlock extends MarkdownElement {
 				catch (e) {
 					return;
 				}
+				
 
 				let prevSrc = this.src;
 				this._src = url;
@@ -275,7 +336,6 @@ export class MarkdownBlock extends MarkdownElement {
 						if (!response.ok) {
 							throw new Error(`Failed to fetch ${this.src}: ${response.status} ${response.statusText}`);
 						}
-
 						return response.text();
 					})
 					.then(text => {
