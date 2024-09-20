@@ -17,6 +17,7 @@
 <body>
 
 <h1>md-block Tests</h1>
+
 <section>
 	<h1>Basic functionality</h1>
 
@@ -361,7 +362,7 @@ function innerHTML(test, ref) {
 
 	ref = $("script[type='text/html']", ref)?.textContent;
 	[test, ref] = [test, ref].map(t => t.trim().replace(/\s+/g, " ").replace(/>\s+/g, ">").replace(/\s+<\//g, "</"));
-	if (test != ref) {console.log(test, 1, ref)}
+	{console.log(test, 1, ref)}
 	return test == ref;
 }
 </script>

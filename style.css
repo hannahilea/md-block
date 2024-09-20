@@ -29,10 +29,6 @@ input, select, textarea {
 	font: inherit;
 }
 
-.footnotes {
-	font-size: smaller;
-}
-
 body > header,
 nav,
 main,
@@ -136,6 +132,10 @@ th {
 td, th {
 	padding: .3em .5em;
 	border: 1px solid rgb(0 0 0 / .2);
+}
+
+.footnotes {
+	font-size: smaller;
 }
 
 .demo-container {

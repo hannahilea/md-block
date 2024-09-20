@@ -18,6 +18,7 @@ function deIndent(text) {
 
 	if (indent) {
 		indent = indent[1];
+
 		text = text.replace(RegExp("^" + indent, "gm"), "");
 	}
 
@@ -180,7 +181,6 @@ export class MarkdownElement extends HTMLElement {
 			}
 		}
 
-		// Handle footnote replacement *before* any other markdown parsing happens
 		html = handleFootnotes(html);
 
 		this.innerHTML = html;
@@ -315,7 +315,6 @@ export class MarkdownBlock extends MarkdownElement {
 		},
 
 		code (code, language, escaped) {
-			
 			if (this._contentFromHTML) {
 				// Inline HTML code needs to be escaped to not be parsed as HTML by the browser
 				// This results in marked double-escaping it, so we need to unescape it
@@ -325,7 +324,7 @@ export class MarkdownBlock extends MarkdownElement {
 				// Remote code may include characters that need to be escaped to be visible in HTML
 				code = code.replace(/</g, "&lt;");
 			}
-			
+
 			return `<pre class="language-${language}"><code>${code}</code></pre>`;
 		}
 	}, MarkdownSpan.renderer);
@@ -338,6 +337,7 @@ export class MarkdownBlock extends MarkdownElement {
 		if (oldValue === newValue) {
 			return;
 		}
+
 		switch (name) {
 			case "src":
 				let url;
@@ -347,7 +347,6 @@ export class MarkdownBlock extends MarkdownElement {
 				catch (e) {
 					return;
 				}
-				
 
 				let prevSrc = this.src;
 				this._src = url;
@@ -358,6 +357,7 @@ export class MarkdownBlock extends MarkdownElement {
 						if (!response.ok) {
 							throw new Error(`Failed to fetch ${this.src}: ${response.status} ${response.statusText}`);
 						}
+
 						return response.text();
 					})
 					.then(text => {
