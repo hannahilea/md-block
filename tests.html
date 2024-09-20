@@ -247,6 +247,24 @@
 				</script>
 			</td>
 		</tr>
+		<tr title="In a code block, no handling occurs">
+			<td>
+				<md-block>
+					```
+					Here is some text with a footnote.[^x]
+
+					[^x]: But it won't look like a footnote!
+					```
+				</md-block>
+				<testarea>
+				</testarea>
+			</td>
+			<td>
+				<script type="text/html">
+					<pre class="language-"><code>Here is some text with a footnote.[^x] [^x]: But it won't look like a footnote!</code></pre>
+				</script>
+			</td>
+		</tr>
 		<tr title="A footnote description without a reference is ignored">
 			<td>
 				<md-block>
