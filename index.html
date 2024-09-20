@@ -126,6 +126,31 @@
 		<md-block src="data:text/markdown,B [Click me](javascript:alert('hi'))"></md-block>
 	</script>
 
+	<p>Footnotes.</p>
+	<script type="text/html" class="md-block-demo">
+		<md-block>
+			This paragraph has a[^A] few[^yay] footnotes[^C3], including a duplicate reference.[^A]
+
+			[^C3]: Note that the order of the footnotes is the order in which they are referenced.
+			
+			[^A]: Each footnote detail needs to be on a new line, and multiple references can be made to the same footnote.
+
+			[^yay]: Footnotes will be presented at the end of the block, even if they aren't defined at the end.
+
+			Here is another paragraph that happens after the footnotes are defined.
+
+			If a footnote reference is missing a corresponding definition, it won't be styled as a footnote.[^1]
+			
+			[^3]: If a definition isn't referenced in the text, it is not included in the footnotes.
+		
+			``` 
+			Footnotes in code blocks will be ignored.[^1]
+
+			[^1]: As is customary.
+			```
+		</md-block>
+	</script>
+
 	<p>View source for more demos!</p>
 </section>
 

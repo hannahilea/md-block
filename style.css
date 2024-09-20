@@ -29,6 +29,10 @@ input, select, textarea {
 	font: inherit;
 }
 
+.footnotes {
+	font-size: smaller;
+}
+
 body > header,
 nav,
 main,

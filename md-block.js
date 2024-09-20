@@ -24,8 +24,8 @@ function deIndent(text) {
 	return text;
 }
 
-// Support footnotes
-function replaceFootnotes(text) {
+// Handle footnote support
+function handleFootnotes(text) {
 	// Find all footnotes; must have a newline before and after them
 	let footnotes = text.match(/<p>[ \t]*\[\^[A-Za-z0-9]+\]:.*[ \t\n]*<\/p>/g);
 	if (footnotes === null) {
@@ -181,7 +181,7 @@ export class MarkdownElement extends HTMLElement {
 		}
 
 		// Handle footnote replacement *before* any other markdown parsing happens
-		html = replaceFootnotes(html);
+		html = handleFootnotes(html);
 
 		this.innerHTML = html;
 
