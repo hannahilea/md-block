@@ -54,6 +54,8 @@ function replaceFootnotes(text) {
 		return r.substring(2, r.length-1)  // foo
 	});
 	let validRefSymbols = refSymbols.filter((r) => footnoteSymbols.includes(r));
+	// ...and make sure those references are unique
+	validRefSymbols = Array.from(new Set(validRefSymbols))
 
 	// Only include the first footnotes for each reference
 	let validFootnotes = validRefSymbols.map(function (s) {
@@ -62,25 +64,42 @@ function replaceFootnotes(text) {
 	});
 
 	// Now our lists of references and footnotes are all ordered correctly!
-	// Any valid footnote/reference pairs? Link them in text
-	validRefSymbols.forEach( (ref, i) =>{
-		let iRef = String(i + 1);
-		let footnoteSuperscript = '<sup><a class="footnote-ref" href="#footnote-' + 
-									iRef + '" id="footnote-' + iRef + '-ref">' +
-									iRef + '</a></sup>';
-		text = text.replace("[^" + ref + "]", footnoteSuperscript);
-	})
+	// First, let's set up the footnote footer 
+	let footnoteFooter = '\n<div class="footnotes">\n\t<hr class="footnote-div">'
 
-	// ...and add a footnotes section to bottom of the text
-	text += '\n<div class="footnotes">\n\t<hr class="footnote-div"//////>'
-	validFootnotes.forEach( (footnote, i) =>{
+	validRefSymbols.forEach((symbol, i) =>{
+		// Let's add the footnote itself first
+		let footnote = validFootnotes[i];
 		let content = footnote.split(":")[1];
 		content = content.substring(0, content.length - 4).trim();
-		let iRef = String(i + 1);
-		let linkback = '<a class="footnote" href="#footnote-' + iRef + '-ref" id="footnote-' + iRef + '">↩</a>'
-		text += "\n\t<p>" + iRef + ". " + content + linkback + "</p>";
+
+		let iRef = i + 1;
+		let footnoteHTML = "\n\t<p>" + iRef + ". " + content; 
+
+		// It is possible for multiple references to point to the same footnote,
+		// so we need to give them each unique ids
+		let r = RegExp(String.raw`\[\^${symbol}\]`, "g")
+		let numRefs = text.match(r).length;
+		for (let iSymbol = 0; iSymbol < numRefs; iSymbol++) {
+			let uniqueRef = iRef + "-" + iSymbol;
+
+			// Update the footnote reference
+			let footnoteSuperscript = '<sup><a class="footnote-ref" href="#footnote-' + 
+				uniqueRef + '" id="footnote-' + uniqueRef + '-ref">' +
+											iRef + '</a></sup>';
+			text = text.replace("[^" + symbol + "]", footnoteSuperscript);								
+
+			// Add the footnote linkback
+			let linkback = '<a class="footnote" href="#footnote-' + uniqueRef + '-ref" id="footnote-' + uniqueRef + '">↩</a>'
+			footnoteHTML += linkback;
+		}
+		footnoteFooter += footnoteHTML + "</p>";
 	})
-	text += "\n</div>"
+
+	// ...and close out the footnote footer:
+	footnoteFooter += "\n</div>"
+
+	text += footnoteFooter;
 	
 	return text;
 }
