@@ -17,7 +17,6 @@
 <body>
 
 <h1>md-block Tests</h1>
-
 <section>
 	<h1>Basic functionality</h1>
 
@@ -226,10 +225,10 @@
 			</td>
 			<td>
 				<script type="text/html">
-					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup>. More text with the same footnote<sup><a class="footnote-ref" href="#footnote-1-2" id="footnote-1-ref-2">1</a></sup>.</p>
+					<p>Here is some text with a footnote<sup><a class="footnote-ref" href="#footnote-1-1" id="footnote-1-1-ref">1</a></sup>. More text with the same footnote<sup><a class="footnote-ref" href="#footnote-1-2" id="footnote-1-2-ref">1</a></sup>.</p>
 					<div class="footnotes">
 						<hr class="footnote-div">
-						<p>1. Here is the content of that footnote.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a><a class="footnote" href="#footnote-1-ref-2" id="footnote-1-2">↩</a></p>
+						<p>1. Here is the content of that footnote.<a class="footnote" href="#footnote-1-1-ref" id="footnote-1-1">↩</a><a class="footnote" href="#footnote-1-2-ref" id="footnote-1-2">↩</a></p>
 					</div>
 				</script>
 			</td>
@@ -270,7 +269,9 @@
 					Here is some text with[^A] multiple[^B] footnotes[^C].
 
 					[^C]: This should be the last footnote.
+
 					[^A]: This should be the first footnote.
+
 					[^B]: This should be the middle footnote.
 				</md-block>
 				<testarea>
@@ -310,24 +311,25 @@
 				</script>
 			</td>
 		</tr>
-		<tr title="A footnote description is invalid without a blank line before it">
+		<tr title="A footnote description is invalid without a blank line before and after it">
 			<td>
 				<md-block>
-					Here is some text with two[^whee] footnotes[^yay].
+					Here is some text with two[^whee] footnotes[^yay]. In e.g. github markdown, 
+					this would be fine, but since this package depends on Marked, and marked only 
+					treats new lines as new paragraphs if there is a blank line between them, we *also* 
+					require new lines between footnote definitions, and do not treat them as footnotes 
+					if the line is missing (i.e., this example).
 
-					[^whee]: This definition is fine
-					[^yay]: This definition is not.
+					[^whee]: This definition is not treated as a footnote.
+					[^yay]: This definition is not either.
 				</md-block>
 				<testarea>
 				</testarea>
 			</td>
 			<td>
 				<script type="text/html">
-					<p>Here is some text with two<sup><a class="footnote-ref" href="#footnote-1" id="footnote-1-ref">1</a></sup> footnotes.</p>
-					<div class="footnotes">
-						<hr class="footnote-div">
-						<p>1. This definition is fine.<a class="footnote" href="#footnote-1-ref" id="footnote-1">↩</a></p>
-					</div>
+					<p>Here is some text with two[^whee] footnotes[^yay]. In e.g. github markdown, this would be fine, but since this package depends on Marked, and marked only treats new lines as new paragraphs if there is a blank line between them, we <em>also</em> require new lines between footnote definitions, and do not treat them as footnotes if the line is missing (i.e., this example).</p>
+					<p>[^whee]: This definition is not treated as a footnote. [^yay]: This definition is not either.</p>
 				</script>
 			</td>
 		</tr>
